@@ -17,3 +17,9 @@ jobs:
         uses: actions/checkout@v4
       - name: AWS Test
         run: aws --version
+      - name: S3 Upload
+        run: |
+          aws s3 cp \
+            --recursive \
+            --region ap-northeast-2 \
+            /assets/ s3://testbucketforskkuding/
