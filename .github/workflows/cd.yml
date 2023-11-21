@@ -22,4 +22,4 @@ jobs:
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
-            /assets s3://testbucketforskkuding/
+            ./assets s3://testbucketforskkuding/
