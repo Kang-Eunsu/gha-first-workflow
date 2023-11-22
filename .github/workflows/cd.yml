@@ -74,7 +74,7 @@ jobs:
           context: ./node
           file: ./node/Dockerfile
           platforms: linux/amd64
-          push: true
+          push: false
           tags: ${{ steps.docker_meta.outputs.tags }}       #빌드 시 위에서 지정한 태그를 사용하도록 지정
           labels: ${{ steps.docker_meta.outputs.labels }}   #빌드 시 위에서 지정한 태그를 사용하도록 지정
         # run: |
