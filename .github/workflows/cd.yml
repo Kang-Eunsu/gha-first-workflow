@@ -42,7 +42,7 @@ jobs:
       contents: read
     env:
       AWS_REGION: "ap-northeast-2"
-      ECR_REPOSITORY: "586817503711.dkr.ecr.ap-northeast-2.amazonaws.com/ecr_test"
+      ECR_REPOSITORY: "ecr_test"
     
     steps:
       - name: Checkout source code.
