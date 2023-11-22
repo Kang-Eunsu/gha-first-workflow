@@ -57,11 +57,28 @@ jobs:
       - name: ECR Login
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+      # Docker Meta 지정
+      - name: Docker meta                       #스텝의 이름
+        id: docker_meta                         #변수의 일부이며 나중에 output값으로 활용 가능
+        uses: crazy-max/ghaction-docker-meta@v1 #사용할 동작
+        with:                                   #동작에 대한 input값 사용 선언
+          images: eunsu/node                  #이미지 이름 지정
+          tag-semver: |                         #이미지 이름 뒤에 들어갈 버전 정보
+            {{version}}
+            {{major}}.{{minor}}
       - name: Build, Tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./node
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+        uses: docker/build-push-action@v2
+        with:
+          context: ./node
+          file: ./node/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}       #빌드 시 위에서 지정한 태그를 사용하도록 지정
+          labels: ${{ steps.docker_meta.outputs.labels }}   #빌드 시 위에서 지정한 태그를 사용하도록 지정
+        # run: |
+        #   docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./node
+        #   docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        #   echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:latest"
       
