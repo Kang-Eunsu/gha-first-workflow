@@ -56,7 +56,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: ECR Login
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login
+        uses: aws-actions/amazon-ecr-login@v3
       - name: Build, Tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
