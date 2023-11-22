@@ -1,0 +1,51 @@
+# Workflow의 이름. 나중에 해당 값을 사용할 수 있기 때문에 유니크하게 사용
+name: "CodeQL"
+
+# workflow를 동작하게 하는 trigger
+# repository의 main branch에 push, pull request 이벤트가 발생할 때마다 실행됨
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+
+# job은 사용자가 정한 플랫폼을 통해 step이라는 일련의 과정을 실행할 수 있음.
+# 여러 개의 job을 사용할 수 있으며, 여러 개의 job을 사용할 때는 서로 정보도 교환할 수 있음.
+# 그리고 각각 독립적으로도 실행할 수도 있음.
+jobs:
+  analyze:
+    # Job의 이름 지정
+    name: Analyze
+    # 해당 job을 리눅스(ubuntu 최신) 환경에서 사용할 것임
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript']
+
+
+    steps:
+      # Github Actions는 해당 프로젝트를 리눅스 환경에 checkout하고 나서 실행을 함
+      # 마치 우리가 브랜치를 만들 때 checkout 하는 것처럼. 꼭 필요함
+      # 참고로 아래 코드는 누군가 만들어놓은 Action을 사용하는 것임
+      # 만들어놓은 Action을 사용할 때는 uses라는 키워드를 사용해야함
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # CodeQL 초기화 (누군가 만들어놓은 action 사용)
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
